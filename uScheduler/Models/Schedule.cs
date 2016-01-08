@@ -3,7 +3,7 @@ using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
 namespace uScheduler.Models {
-    [TableName("uScheduler_Schedules")]
+    [TableName(SchedulerConstants.Database.ScheduleTable)]
     public class Schedule {
         [PrimaryKeyColumn(AutoIncrement = true)]
         public int Id { get; set; }
