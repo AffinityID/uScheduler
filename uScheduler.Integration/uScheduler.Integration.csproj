@@ -377,8 +377,22 @@
     <Error Condition="!Exists('..\packages\UmbracoCms.7.2.8\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.2.8\build\UmbracoCms.props'))" />
     <Error Condition="!Exists('..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets'))" />
   </Target>
+  <ItemGroup>
+        <PluginFiles Include="$(SolutionDir)uScheduler\App_Plugins\**\*.*"/>
+  </ItemGroup>
+  <Target Name="AfterBuild">
+    <copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles->'$(ProjectDir)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />
+  </Target>
   <Import Project="..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>

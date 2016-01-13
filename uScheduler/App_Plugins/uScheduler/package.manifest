@@ -1,5 +1,7 @@
 ﻿{
 	javascript: [
-		'~/App_Plugins/uScheduler/uscheduler.resource.js'
+		'~/App_Plugins/uScheduler/uscheduler.resource.js',
+		'~/App_Plugins/uScheduler/backoffice/uscheduler/edit.controller.js',
+        '~/App_Plugins/uScheduler/backoffice/uscheduler/delete.controller.js'
 	]
 }

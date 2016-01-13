@@ -31,7 +31,8 @@ namespace uScheduler.Controllers {
                     CreateTreeNode(
                         s.Id.ToString(), 
                         Constants.System.Root.ToString(), 
-                        queryStrings, 
+                        queryStrings,
+                        s.Name,
                         s.Disabled ? disabledIcon : activeIcon)));
 
             return nodes;

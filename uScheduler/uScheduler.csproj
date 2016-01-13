@@ -227,14 +227,20 @@
     <Compile Include="SchedulerApplication.cs" />
     <Compile Include="Controllers\SchedulerTreeController.cs" />
     <Compile Include="SchedulerConstants.cs" />
+    <Compile Include="Services\Interfaces\IScheduleRunner.cs" />
+    <Compile Include="Services\ScheduleRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="App_Plugins\uScheduler\backoffice\uScheduler\delete.controller.js" />
+    <Content Include="App_Plugins\uScheduler\backoffice\uScheduler\delete.html" />
+    <Content Include="App_Plugins\uScheduler\backoffice\uScheduler\edit.controller.js" />
     <None Include="App_Plugins\uScheduler\package.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Content Include="App_Plugins\uScheduler\backoffice\uScheduler\edit.html" />
     <Content Include="App_Plugins\uScheduler\uscheduler.resource.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
