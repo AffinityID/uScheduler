@@ -1,16 +1,9 @@
-﻿<form name="scheduleForm" 
-      ng-controller="uScheduler.EditController"
-      ng-submit="save()"
-      ng-show="loaded">
-    <!--
-    Url
-    Data
-    HttpVerb
-    Frequency
-    NextRun
-    Disabled
-    -->
-    <umb-panel>
+﻿<umb-panel>
+    <form name="scheduleForm"
+          ng-controller="uScheduler.EditController"
+          ng-submit="save()"
+          ng-show="loaded">
+
         <umb-header>
             <umb-content-name placeholder="@placeholders_entername" ng-model="schedule.Name" required />
         </umb-header>
@@ -19,40 +12,59 @@
             <div class="tab-content form-horizontal">
                 <div class="umb-pane">
                     <umb-control-group label="Url" description="URL to invoke at the scheduled time.">
-                        <input type="text" class="umb-editor umb-textstring" ng-model="schedule.Url" required/>
+                        <input type="text" class="umb-editor umb-textstring" ng-model="schedule.Url" required />
                     </umb-control-group>
                     <umb-control-group label="Http Verb" description="Verb to use.">
-                        <select class="umb-editor umb-dropdown" ng-model="schedule.HttpVerb" ng-options="item as item for item in verbs track by item"/>
+                        <select class="umb-editor umb-dropdown" ng-model="schedule.HttpVerb" ng-options="item as item for item in verbs track by item" />
                     </umb-control-group>
                     <umb-control-group label="Data" description="Optional POST data." ng-if="schedule.HttpVerb === 'PUT' || schedule.HttpVerb === 'POST'">
-                        <textarea rows="10" class="umb-editor umb-textarea textstring" ng-model="schedule.Data"/>
+                        <textarea rows="10" class="umb-editor umb-textarea textstring" ng-model="schedule.Data" />
                     </umb-control-group>
                     <umb-control-group label="Frequency" description="Frequency of invocation.">
-                        <select class="umb-editor umb-dropdown" ng-model="schedule.Frequency" ng-options="item as item for item in frequencies track by item"/>
+                        <select class="umb-editor umb-dropdown" ng-model="schedule.Frequency" ng-options="item as item for item in frequencies track by item" />
                     </umb-control-group>
-                    <umb-property property="datepicker">
-                        <umb-editor model="datepicker"></umb-editor>
-                    </umb-property>
+                    <umb-control-group label="Next Run" description="Next scheduled run.">
+                        <div class="input-append date" id="next-run-datepicker">
+                            <input type="text" class="umb-editor umb-datepicker" required />
+                            <span class="add-on">
+                                <i class="icon-calendar"></i>
+                            </span>
+                        </div>
+                    </umb-control-group>
                     <div class="umb-tab-buttons">
                         <div class="btn-group">
                             <button type="submit" data-hotkey="ctrl+s" class="btn btn-success">
                                 <localize key="buttons_save">Save</localize>
                             </button>
                             <button type="button" class="btn"
-                                ng-if="!isNew"
-                                ng-class="schedule.Disabled ? 'btn-info' : 'btn-danger'"
-                                ng-click="toggleStatus()">
+                                    ng-if="!isNew"
+                                    ng-class="schedule.Disabled ? 'btn-info' : 'btn-danger'"
+                                    ng-click="toggleStatus()">
                                 {{ schedule.Disabled ? 'Enable' : 'Disable' }}
                             </button>
                             <button type="button" data-hotkey="ctrl+r" class="btn btn-warning"
-                                ng-if="!isNew && !schedule.Disabled"
-                                ng-click="run()" >
+                                    ng-if="!isNew && !schedule.Disabled"
+                                    ng-click="run()">
                                 Run now
                             </button>
                         </div>
                     </div>
+                    <umb-control-group label="Logs" description="Logs from previous runs" ng-if="logs.length > 0">
+                        <table class="table">
+                            <tr>
+                                <th>Execution Time</th>
+                                <th>User</th>
+                                <th>Result</th>
+                            </tr>
+                            <tr ng-repeat="log in logs" ng-class="{'danger':!log.Success}">
+                                <td>{{ log.ExecutionDateTimeUtc | date : 'medium' }}</td>
+                                <td>{{ log.UserId }}</td>
+                                <td>{{ log.Result }}</td>
+                            </tr>
+                        </table>
+                    </umb-control-group>
                 </div>
             </div>
         </div>
-    </umb-panel>
-</form>
+    </form>
+</umb-panel>

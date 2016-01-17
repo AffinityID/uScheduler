@@ -44,7 +44,7 @@ namespace uScheduler.Controllers {
             var query = new Sql()
                 .Select("*")
                 .From(SchedulerConstants.Database.ScheduleTable)
-                .Where("Id =" + id);
+                .Where($"Id = {id}");
 
             return DatabaseContext.Database.Fetch<Schedule>(query)
                 .FirstOrDefault();
@@ -70,5 +70,15 @@ namespace uScheduler.Controllers {
         public int DeleteSchedule(int id) {
             return DatabaseContext.Database.Delete<Schedule>(id);
         }
+
+        public IEnumerable<Log> GetLogs(int scheduleId, int page, int itemsPerPage) {
+            var query = new Sql()
+                .Select("*")
+                .From(SchedulerConstants.Database.LogTable)
+                .Where($"ScheduleId = {scheduleId}")
+                .OrderByDescending("ExecutionDateTimeUtc");
+
+            return DatabaseContext.Database.Fetch<Log>(page, itemsPerPage, query);
+        } 
     }
 }

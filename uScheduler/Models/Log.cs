@@ -10,7 +10,8 @@ namespace uScheduler.Models {
         [Index(IndexTypes.NonClustered, Name = "IX_ScheduleId")]
         public int ScheduleId { get; set; }
         public int UserId { get; set; }
-        public DateTime ExecutionDateTime { get; set; }
+        public DateTime ExecutionDateTimeUtc { get; set; }
+        public bool Success { get; set; }
         [SpecialDbType(SpecialDbTypes.NTEXT)]
         public string Result { get; set; }
     }

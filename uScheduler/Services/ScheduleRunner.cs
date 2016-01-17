@@ -44,18 +44,25 @@ namespace uScheduler.Services {
         }
 
         private async Task RunScheduledAsync(Schedule schedule) {
-            var currentTime = DateTime.Now;
-            if (schedule.NextRun > currentTime) return;
+            var currentTime = DateTime.UtcNow;
+            if (schedule.NextRunUtc > currentTime) return;
                 
             var frequency = (Frequency) Enum.Parse(typeof(Frequency), schedule.Frequency);
 
-            var nextRun = GetNextRun(frequency, schedule.NextRun);
-            while (nextRun < currentTime) { //To handle scenarios where past executions may have been skipped.
-                nextRun = GetNextRun(frequency, nextRun);
+            var nextRun = GetNextRun(frequency, schedule.NextRunUtc);
+            if (frequency == Frequency.Single) {
+                schedule.Disabled = true;
             }
-            schedule.NextRun = nextRun;
+            else {
+                //Handle scenarios where past executions may have been skipped.
+                while (nextRun < currentTime) { 
+                    nextRun = GetNextRun(frequency, nextRun);
+                }
+            }
+            
+            schedule.NextRunUtc = nextRun;
 
-            schedule.Disabled = frequency == Frequency.Single;
+            
             Database.Update(schedule);
 
             await RunAsync(0, schedule);
@@ -64,7 +71,7 @@ namespace uScheduler.Services {
         private async Task RunAsync(int userId, Schedule schedule) {
             var log = new Log
             {
-                ExecutionDateTime = DateTime.Now,
+                ExecutionDateTimeUtc = DateTime.UtcNow,
                 ScheduleId = schedule.Id,
                 UserId = userId
             };
@@ -80,8 +87,9 @@ namespace uScheduler.Services {
                     {
                         req.Content = new StringContent(schedule.Data);
                     }
-                    var response = await client.SendAsync(req).ConfigureAwait(false);
-                    log.Result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var resp = await client.SendAsync(req).ConfigureAwait(false);
+                    log.Result = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    log.Success = resp.IsSuccessStatusCode;
                 }
             }
             catch (Exception ex)

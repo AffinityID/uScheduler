@@ -18,7 +18,7 @@ namespace uScheduler.Models {
         public string HttpVerb { get; set; }
         [Length(100)]
         public string Frequency { get; set; }
-        public DateTime NextRun { get; set; }
+        public DateTime NextRunUtc { get; set; }
         public bool Disabled { get; set; }
     }
 }
