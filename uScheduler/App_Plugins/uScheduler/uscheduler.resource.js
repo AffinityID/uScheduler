@@ -18,6 +18,9 @@
             },
             deleteSchedule: function(id) {
                 return $http.delete('backoffice/uScheduler/SchedulerApi/DeleteSchedule?id=' + id);
+            },
+            getScheduleLogs: function(id, page, itemsPerPage) {
+                return $http.get('backoffice/uScheduler/SchedulerApi/GetLogs?scheduleId=' + id + '&page=' + page + '&itemsPerPage=' + itemsPerPage);
             }
         };
     });

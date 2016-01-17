@@ -43,5 +43,10 @@ namespace uScheduler {
                 _log.Error("Tick failed to complete.", ex);
             }
         }
+
+//        private void UpdateLocalization() {
+//            var localization = ApplicationContext.Current.Services.LocalizationService;
+//            localization.GetDictionaryItemByKey()
+//        }
     }
 }

@@ -1,52 +1,65 @@
 ﻿angular.module("umbraco")
     .controller("uScheduler.EditController", ['$scope', '$routeParams', '$element',
-        'navigationService', 'treeService', 'notificationsService', 'contentEditingHelper', 'uScheduler.Resource',
-        function($scope, $route, $element, nav, tree, notification, editHelper, resource) {
+        'navigationService', 'assetsService', 'notificationsService', 'contentEditingHelper', 'uScheduler.Resource',
+        function($scope, $route, $element, nav, assetsService, notification, editHelper, resource) {
             function toggleStatus() {
                 $scope.schedule.Disabled = $scope.schedule.Disabled ? false : true;
                 save();
             }
 
-            function syncTree(id) {
-                nav.syncTree({ tree: 'uScheduler', path: [id.toString()], forceReload: true, activate: true });
+            function syncTree(id, reload) {
+                nav.syncTree({ tree: 'uScheduler', path: ['-1', id.toString()], activate: true, forceReload: reload });
             }
 
             function save() {
-                //Retrieve the set NextRun datetime from the element as the Umbraco control breaks the link from the passed in model.
-                $scope.schedule.NextRun = $('#datepickernextRun').data().date;
-
-                resource.saveSchedule($scope.schedule).then(function (response) {
-                    $scope.schedule = response.data;
-                    var id = response.data.Id;
-                    syncTree(id);
-                    editHelper.redirectToCreatedContent(id);
-                    notification.success(response.data.Name + ' has been saved.');
-                });
+                resource.saveSchedule($scope.schedule)
+                    .then(function (response) {
+                        $scope.schedule = response.data;
+                        var id = response.data.Id;
+                        syncTree(id, true);
+                        editHelper.redirectToCreatedContent(id);
+                        notification.success(response.data.Name + ' has been saved.');
+                    });
             }
 
             function run() {
                 resource.runSchedule($route.id);
             }
 
+            function bindDatePicker() {
+                assetsService.loadCss('lib/datetimepicker/bootstrap-datetimepicker.min.css');
+                assetsService.load([
+                    "lib/moment/moment-with-locales.js",
+                    "lib/datetimepicker/bootstrap-datetimepicker.js"
+                ]).then(function() {
+                    var datepicker = $('#next-run-datepicker', $element).datetimepicker({
+                        format: "YYYY-MM-DD HH:mm",
+                        useSeconds: false,
+                        icons: {
+                            time: "icon-time",
+                            date: "icon-calendar",
+                            up: "icon-chevron-up",
+                            down: "icon-chevron-down"
+                        }
+                    }).on('dp.change', function (e) {
+                        $scope.schedule.NextRunUtc = e.date.utc();
+                    });
+
+                    $scope.$watch('schedule.NextRunUtc', function (newValue) {
+                        datepicker.data('DateTimePicker').setDate(new Date(newValue));
+                    });
+                });
+            }
+
             function initialize() {
                 var id = $route.id;
                 $scope.isNew = id <= -1;
-
-                $scope.datepicker = {
-                    editor: "Umbraco.DateTime",
-                    label: 'Next Run',
-                    description: 'Next scheduled invocation.',
-                    hideLabel: false,
-                    view: "datepicker",
-                    alias: 'nextRun',
-                    validation: {
-                        mandatory: true
-                    },
-                    config: {
-                        format: "YYYY-MM-DD HH:mm",
-                        useSeconds: false
-                    }
+                syncTree(id);
+                $scope.schedule = {
+                    HttpVerb: 'GET',
+                    Frequency: 'Single'
                 };
+                bindDatePicker();
 
                 resource.getScheduleHttpVerbs()
                    .then(function (response) {
@@ -58,18 +71,18 @@
                         $scope.frequencies = response.data;
                     });
 
-                if ($scope.isNew){
-                    $scope.schedule = {
-                        HttpVerb: 'GET',
-                        Frequency: 'Single'
-                    };
+                if ($scope.isNew) {
                     $scope.loaded = true;
                 } else {
-                    resource.getSchedule($route.id)
+                    resource.getSchedule(id)
                         .then(function (response) {
                             $scope.schedule = response.data;
-                            $scope.datepicker.value = $scope.schedule.NextRun;
                             $scope.loaded = true;
+                        });
+
+                    resource.getScheduleLogs(id, 1, 10)
+                        .then(function(response) {
+                            $scope.logs = response.data;
                         });
                 }
             }
