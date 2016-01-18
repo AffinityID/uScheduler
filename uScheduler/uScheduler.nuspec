@@ -11,6 +11,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
         <releaseNotes>
+            1.0.3   Fixed incorrect path for manifest files.
             1.0.2   Added missing manifest file used by Umbraco.
             1.0.1   Added in UmbracoCms as a dependency to ensure correct installation.
             1.0.0   Initial release.
@@ -21,6 +22,6 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="App_Plugins\**\*.manifest" target="App_Plugins\"/>
+        <file src="App_Plugins\**\*.manifest" target="content\App_Plugins\"/>
     </files>
 </package>
