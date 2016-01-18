@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("uScheduler")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A task scheduling module for Umbraco.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Affinity Id")]
 [assembly: AssemblyProduct("uScheduler")]
