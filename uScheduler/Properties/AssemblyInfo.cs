@@ -17,6 +17,6 @@ using uScheduler.Properties;
 
 namespace uScheduler.Properties {
     public static class AssemblyInfo {
-        public const string VersionString = "1.0.1";
+        public const string VersionString = "1.0.2";
     }
 }
