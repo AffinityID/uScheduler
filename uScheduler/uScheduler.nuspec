@@ -1,15 +1,21 @@
 <?xml version="1.0"?>
-<package >
-  <metadata>
-    <id>$id$</id>
-    <version>$version$</version>
-    <title>uScheduler for Umbraco</title>
-    <authors>$author$</authors>
-    <owners>$author$</owners>
-    <projectUrl>https://github.com/AffinityID/uScheduler</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
-    <tags>umbraco scheduler</tags>
-  </metadata>
+
+<package>
+    <metadata>
+        <id>$id$</id>
+        <version>$version$</version>
+        <title>uScheduler for Umbraco</title>
+        <authors>$author$</authors>
+        <owners>$author$</owners>
+        <projectUrl>https://github.com/AffinityID/uScheduler</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>$description$</description>
+        <releaseNotes>
+            1.0.0   Initial release.
+        </releaseNotes>
+        <tags>umbraco scheduler</tags>
+        <dependencies>
+            <dependency id="UmbracoCms" version="7.0.0" />
+        </dependencies>
+    </metadata>
 </package>

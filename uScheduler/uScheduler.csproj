@@ -237,6 +237,7 @@
     <Content Include="App_Plugins\uScheduler\backoffice\uScheduler\edit.controller.js" />
     <None Include="App_Plugins\uScheduler\package.manifest" />
     <None Include="packages.config" />
+    <None Include="uScheduler.nuspec" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
