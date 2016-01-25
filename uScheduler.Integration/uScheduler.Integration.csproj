@@ -378,7 +378,7 @@
     <Error Condition="!Exists('..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.2.8\build\UmbracoCms.targets'))" />
   </Target>
   <ItemGroup>
-        <PluginFiles Include="$(SolutionDir)uScheduler\App_Plugins\**\*.*"/>
+    <PluginFiles Include="$(SolutionDir)uScheduler\App_Plugins\**\*.*" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <copy SourceFiles="@(PluginFiles)" DestinationFiles="@(PluginFiles->'$(ProjectDir)\App_Plugins\%(RecursiveDir)%(Filename)%(Extension)')" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />

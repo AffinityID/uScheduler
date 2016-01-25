@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 using Umbraco.Core.Persistence;
 using Umbraco.Core.Persistence.DatabaseAnnotations;
 
@@ -20,5 +22,14 @@ namespace uScheduler.Models {
         public string Frequency { get; set; }
         public DateTime NextRunUtc { get; set; }
         public bool Disabled { get; set; }
+
+        [Column("Headers")]
+        [JsonIgnore]
+        public string HeadersString { get; set; }
+        [Ignore]
+        public IDictionary<string, string> Headers {
+            get { return HeadersString == null ? null : JsonConvert.DeserializeObject<IDictionary<string, string>>(HeadersString); }
+            set { HeadersString = JsonConvert.SerializeObject(value); }
+        }
     }
 }

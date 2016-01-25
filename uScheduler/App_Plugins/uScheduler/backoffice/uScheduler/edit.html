@@ -15,7 +15,14 @@
                         <input type="text" class="umb-editor umb-textstring" ng-model="schedule.Url" required />
                     </umb-control-group>
                     <umb-control-group label="Http Verb" description="Verb to use.">
-                        <select class="umb-editor umb-dropdown" ng-model="schedule.HttpVerb" ng-options="item as item for item in verbs track by item" />
+                        <select class="umb-editor umb-dropdown" ng-model="schedule.HttpVerb" ng-options="item as item for item in verbs track by item"/>
+                    </umb-control-group>
+                    <umb-control-group label="Headers" description="Additional headers to include with the request.">
+                        <div class="form-group" ng-repeat="header in headers">
+                            <input type="text" name="key_{{$index}}" placeholder="Key" ng-model="header.key" ng-change="updateValues(facet)" ng-required="isMandatory" />
+                            <input type="text" name="value_{{$index}}" ng-if="header.key" ng-model="header.value" />
+                            <button ng-if="header.key && header.value" type="button" class="btn btn-danger" ng-click="removeHeader(header)">Delete</button>
+                        </div>
                     </umb-control-group>
                     <umb-control-group label="Data" description="Optional POST data." ng-if="schedule.HttpVerb === 'PUT' || schedule.HttpVerb === 'POST'">
                         <textarea rows="10" class="umb-editor umb-textarea textstring" ng-model="schedule.Data" />
@@ -56,11 +63,13 @@
                                 <th>User</th>
                                 <th>Result</th>
                             </tr>
-                            <tr ng-repeat="log in logs" ng-class="{'danger':!log.Success}">
-                                <td>{{ log.ExecutionDateTimeUtc | date : 'medium' }}</td>
-                                <td>{{ log.UserId }}</td>
-                                <td>{{ log.Result }}</td>
-                            </tr>
+                            <tbody>
+                                <tr ng-repeat="log in logs" ng-class="{'warning':!log.Success}">
+                                    <td>{{ log.ExecutionDateTimeUtc | date : 'medium' }}</td>
+                                    <td>{{ log.UserId }}</td>
+                                    <td>{{ log.Result }}</td>
+                                </tr>
+                            </tbody>
                         </table>
                     </umb-control-group>
                 </div>

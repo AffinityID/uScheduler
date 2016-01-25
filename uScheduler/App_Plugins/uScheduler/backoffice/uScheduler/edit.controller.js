@@ -11,6 +11,11 @@
                 nav.syncTree({ tree: 'uScheduler', path: ['-1', id.toString()], activate: true, forceReload: reload });
             }
 
+            function removeHeader(header) {
+                var headers = $scope.headers;
+                headers.splice(headers.indexOf(header), 1);
+            }
+
             function save() {
                 resource.saveSchedule($scope.schedule)
                     .then(function (response) {
@@ -51,15 +56,11 @@
                 });
             }
 
-            function initialize() {
-                var id = $route.id;
-                $scope.isNew = id <= -1;
-                syncTree(id);
+            function loadOptionValues() {
                 $scope.schedule = {
                     HttpVerb: 'GET',
                     Frequency: 'Single'
                 };
-                bindDatePicker();
 
                 resource.getScheduleHttpVerbs()
                    .then(function (response) {
@@ -67,9 +68,50 @@
                    });
 
                 resource.getScheduleFrequencies()
-                    .then(function(response) {
+                    .then(function (response) {
                         $scope.frequencies = response.data;
                     });
+            }
+
+            function loadHeaders() {
+                var headers = $scope.schedule.Headers;
+                if (headers) {
+                    Object.keys(headers).forEach(function (key) {
+                        var header = {
+                            key: key,
+                            value: headers[key]
+                        }
+                        $scope.headers.push(header);
+                    });
+                }
+
+                $scope.headers.push({});
+            }
+
+            function watchHeaders() {
+                $scope.headers = [];
+                $scope.$watch('headers', function (newValue) {
+                    $scope.schedule.Headers = {};
+                    $scope.headers.forEach(function (h) {
+                        if (!h.key || !h.value) return;
+
+                        $scope.schedule.Headers[h.key] = h.value;
+                    });
+
+                    var lastHeader = newValue[newValue.length - 1];
+                    if (lastHeader && lastHeader.key && lastHeader.value) {
+                        $scope.headers.push({});
+                    }
+                }, true);
+            }
+
+            function initialize() {
+                var id = $route.id;
+                $scope.isNew = id <= -1;
+                syncTree(id);
+                bindDatePicker();
+                watchHeaders();
+                loadOptionValues();
 
                 if ($scope.isNew) {
                     $scope.loaded = true;
@@ -77,6 +119,7 @@
                     resource.getSchedule(id)
                         .then(function (response) {
                             $scope.schedule = response.data;
+                            loadHeaders();
                             $scope.loaded = true;
                         });
 
@@ -88,6 +131,7 @@
             }
 
             $scope.toggleStatus = toggleStatus;
+            $scope.removeHeader = removeHeader;
             $scope.save = save;
             $scope.run = run;
             initialize();

@@ -61,8 +61,6 @@ namespace uScheduler.Services {
             }
             
             schedule.NextRunUtc = nextRun;
-
-            
             Database.Update(schedule);
 
             await RunAsync(0, schedule);
@@ -83,6 +81,8 @@ namespace uScheduler.Services {
                 using (var client = new HttpClient())
                 {
                     var req = new HttpRequestMessage(new HttpMethod(schedule.HttpVerb), url);
+                    schedule.Headers?.ForEach(h => req.Headers.Add(h.Key, h.Value));
+
                     if (!string.IsNullOrWhiteSpace(schedule.Data))
                     {
                         req.Content = new StringContent(schedule.Data);

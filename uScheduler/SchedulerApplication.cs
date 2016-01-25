@@ -38,8 +38,7 @@ namespace uScheduler {
             ApplicationContext applicationContext
             ) {
             var db = applicationContext.DatabaseContext.Database;
-            db.CreateTable<Schedule>(false);
-            db.CreateTable<Log>(false);
+            UpdateDatabase(db);
 
             _log.Info("Starting ticker.");
             Ticker = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
@@ -72,6 +71,21 @@ namespace uScheduler {
 
             doc.Save(HttpContext.Current.Server.MapPath($"{umbracoPath}/config/lang/{languageFile}"));
             _log.Info($"Successfully update language file {languageFile} with area: {area}, key: {key}, value: {value}");
+        }
+
+        private static void UpdateDatabase(Database database) {
+            database.CreateTable<Schedule>(false);
+            database.CreateTable<Log>(false);
+
+            database.Execute(@"
+IF NOT EXISTS(
+    SELECT *
+    FROM   INFORMATION_SCHEMA.COLUMNS
+    WHERE  TABLE_NAME = 'uScheduler_Schedules'
+        AND COLUMN_NAME = 'Headers') 
+ALTER TABLE dbo.uScheduler_Schedules
+ADD [Headers] NTEXT"
+            );
         }
     }
 }
