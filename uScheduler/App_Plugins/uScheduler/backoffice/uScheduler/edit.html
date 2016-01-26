@@ -60,12 +60,14 @@
                         <table class="table">
                             <tr>
                                 <th>Execution Time</th>
+                                <th>Machine Name</th>
                                 <th>User</th>
                                 <th>Result</th>
                             </tr>
                             <tbody>
                                 <tr ng-repeat="log in logs" ng-class="{'warning':!log.Success}">
                                     <td>{{ log.ExecutionDateTimeUtc | date : 'medium' }}</td>
+                                    <td>{{ log.MachineName }}</td>
                                     <td>{{ log.UserId }}</td>
                                     <td>{{ log.Result }}</td>
                                 </tr>

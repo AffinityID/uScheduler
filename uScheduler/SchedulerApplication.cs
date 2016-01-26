@@ -86,6 +86,16 @@ IF NOT EXISTS(
 ALTER TABLE dbo.uScheduler_Schedules
 ADD [Headers] NTEXT"
             );
+
+            database.Execute(@"
+IF NOT EXISTS(
+    SELECT *
+    FROM   INFORMATION_SCHEMA.COLUMNS
+    WHERE  TABLE_NAME = 'uScheduler_Log'
+        AND COLUMN_NAME = 'MachineName') 
+ALTER TABLE dbo.uScheduler_Log
+ADD [MachineName] NVARCHAR(100)"
+            );
         }
     }
 }

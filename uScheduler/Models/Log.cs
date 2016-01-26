@@ -9,6 +9,7 @@ namespace uScheduler.Models {
         public int Id { get; set; }
         [Index(IndexTypes.NonClustered, Name = "IX_ScheduleId")]
         public int ScheduleId { get; set; }
+        public string MachineName { get; set; }
         public int UserId { get; set; }
         public DateTime ExecutionDateTimeUtc { get; set; }
         public bool Success { get; set; }

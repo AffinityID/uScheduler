@@ -71,7 +71,8 @@ namespace uScheduler.Services {
             {
                 ExecutionDateTimeUtc = DateTime.UtcNow,
                 ScheduleId = schedule.Id,
-                UserId = userId
+                UserId = userId,
+                MachineName = Environment.MachineName
             };
 
             try {
@@ -80,8 +81,9 @@ namespace uScheduler.Services {
                     url = $"http://localhost{url}";
                 using (var client = new HttpClient())
                 {
+                    // ReSharper disable once AccessToDisposedClosure
+                    schedule.Headers?.ForEach(h => client.DefaultRequestHeaders.TryAddWithoutValidation(h.Key, h.Value));
                     var req = new HttpRequestMessage(new HttpMethod(schedule.HttpVerb), url);
-                    schedule.Headers?.ForEach(h => req.Headers.Add(h.Key, h.Value));
 
                     if (!string.IsNullOrWhiteSpace(schedule.Data))
                     {

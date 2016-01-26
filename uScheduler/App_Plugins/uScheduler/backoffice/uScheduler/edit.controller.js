@@ -114,6 +114,7 @@
                 loadOptionValues();
 
                 if ($scope.isNew) {
+                    $scope.headers.push({});
                     $scope.loaded = true;
                 } else {
                     resource.getSchedule(id)
