@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using log4net;
 using uScheduler.Models;
@@ -81,13 +82,18 @@ namespace uScheduler.Services {
                     url = $"http://localhost{url}";
                 using (var client = new HttpClient())
                 {
-                    // ReSharper disable once AccessToDisposedClosure
-                    schedule.Headers?.ForEach(h => client.DefaultRequestHeaders.TryAddWithoutValidation(h.Key, h.Value));
                     var req = new HttpRequestMessage(new HttpMethod(schedule.HttpVerb), url);
+                    var contentType = "application/json";
+                    schedule.Headers?.ForEach(h => {
+                        if (h.Key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase))
+                            contentType = h.Value;
+                        else
+                            req.Content.Headers.Add(h.Key, h.Value);
+                    });
 
                     if (!string.IsNullOrWhiteSpace(schedule.Data))
                     {
-                        req.Content = new StringContent(schedule.Data);
+                        req.Content = new StringContent(schedule.Data, Encoding.UTF8, contentType);
                     }
                     var resp = await client.SendAsync(req).ConfigureAwait(false);
                     log.Result = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
