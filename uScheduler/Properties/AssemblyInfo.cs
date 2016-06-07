@@ -14,7 +14,7 @@ using uScheduler.Properties;
 [assembly: Guid("f93ee5d5-e1e0-4df7-b660-870a499acdf8")]
 [assembly: AssemblyVersion(AssemblyInfo.VersionString)]
 [assembly: AssemblyFileVersion(AssemblyInfo.VersionString)]
-[assembly: AssemblyInformationalVersion(AssemblyInfo.VersionString + "-pre-01")]
+[assembly: AssemblyInformationalVersion(AssemblyInfo.VersionString)]
 
 namespace uScheduler.Properties {
     public static class AssemblyInfo {
