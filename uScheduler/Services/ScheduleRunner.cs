@@ -13,11 +13,11 @@ using Umbraco.Core.Persistence;
 namespace uScheduler.Services {
     public class ScheduleRunner : IScheduleRunner {
         private readonly ILog _log;
-        protected readonly UmbracoDatabase Database;
+        private readonly UmbracoDatabase _database;
 
-        public ScheduleRunner(ApplicationContext applicationContext) {
+        public ScheduleRunner(UmbracoDatabase database) {
             _log = LogManager.GetLogger(GetType());
-            Database = applicationContext.DatabaseContext.Database;
+            _database = database;
         }
 
         public void Run() {
@@ -26,7 +26,7 @@ namespace uScheduler.Services {
                 .From(SchedulerConstants.Database.ScheduleTable)
                 .Where("Disabled = 0");
 
-            var schedules = Database.Fetch<Schedule>(query);
+            var schedules = _database.Fetch<Schedule>(query);
 
             var tasks = schedules.Select(RunScheduledAsync).ToArray();
             Task.WaitAll(tasks);
@@ -38,7 +38,7 @@ namespace uScheduler.Services {
                 .From(SchedulerConstants.Database.ScheduleTable)
                 .Where("Id =" + id);
 
-            var schedule = Database.Fetch<Schedule>(query)
+            var schedule = _database.Fetch<Schedule>(query)
                 .FirstOrDefault();
 
             RunAsync(userId, schedule).Wait();
@@ -62,7 +62,7 @@ namespace uScheduler.Services {
             }
             
             schedule.NextRunUtc = nextRun;
-            Database.Update(schedule);
+            _database.Update(schedule);
 
             await RunAsync(0, schedule);
         }
@@ -106,7 +106,7 @@ namespace uScheduler.Services {
                 log.Result = ex.Message;
             }
 
-            Database.Save(log);
+            _database.Save(log);
         }
 
         private static DateTime GetNextRun(Frequency frequency, DateTime previousRun) {

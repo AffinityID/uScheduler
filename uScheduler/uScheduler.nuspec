@@ -11,6 +11,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
         <releaseNotes>
+            1.0.7   Fixed concurrency issues with other extensions.
             1.0.6   Fixed issue with specifying a Content-Type header.
             1.0.5   Added machine name and fixed header validation.
             1.0.4   Added ability to specify headers.

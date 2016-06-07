@@ -14,12 +14,6 @@ using Umbraco.Web.WebApi;
 namespace uScheduler.Controllers {
     [PluginController(SchedulerConstants.Application.Name)]
     public class SchedulerApiController : UmbracoAuthorizedApiController {
-        protected IScheduleRunner Runner;
-
-        public SchedulerApiController() {
-            Runner = new ScheduleRunner(ApplicationContext);
-        }
-
         public IEnumerable<string> GetScheduleHttpVerbs() {
             return new[] {
                 HttpMethod.Get.ToString(),
@@ -64,7 +58,8 @@ namespace uScheduler.Controllers {
 
         [HttpPost]
         public void RunSchedule([FromUri] int id) {
-            Runner.Run(Security.CurrentUser.Id, id);
+            new ScheduleRunner(ApplicationContext.DatabaseContext.Database)
+                .Run(Security.CurrentUser.Id, id);
         }
 
         public int DeleteSchedule(int id) {

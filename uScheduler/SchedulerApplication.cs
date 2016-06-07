@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Threading;
 using System.Web;
 using System.Xml;
@@ -18,17 +19,16 @@ namespace uScheduler {
         protected static Timer Ticker;
 
         private readonly ILog _log;
-        protected readonly IScheduleRunner Runner;
+        private IScheduleRunner _runner;
 
         public SchedulerApplication() {
             _log = LogManager.GetLogger(GetType());
-            Runner = new ScheduleRunner(ApplicationContext.Current);
         }
 
         protected override void ApplicationInitialized(
             UmbracoApplicationBase umbracoApplication,
             ApplicationContext applicationContext
-            ) {
+        ) {
             UpdateLocalization("en.xml", "sections", "uScheduler", "uScheduler");
             UpdateLocalization("en_us.xml", "sections", "uScheduler", "uScheduler");
         }
@@ -36,17 +36,27 @@ namespace uScheduler {
         protected override void ApplicationStarted(
             UmbracoApplicationBase umbracoApplication,
             ApplicationContext applicationContext
-            ) {
-            var db = applicationContext.DatabaseContext.Database;
+        ) {
+            var db = GetOwnUmbracoDatabase();
             UpdateDatabase(db);
+
+            _runner = new ScheduleRunner(db);
 
             _log.Info("Starting ticker.");
             Ticker = new Timer(Tick, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
         }
 
+        private UmbracoDatabase GetOwnUmbracoDatabase() {
+            // we need to get our own instance of UmbracoDatabase as it is not thread-safe to use the existing one
+            // unfortunately there is no way to get provider name from the DatabaseContext, so I re-read the connection string
+            var connectionString = ConfigurationManager.ConnectionStrings["umbracoDbDSN"];
+            var db = new UmbracoDatabase(connectionString.ConnectionString, connectionString.ProviderName);
+            return db;
+        }
+
         private void Tick(object state) {
             try {
-                Runner.Run();
+                _runner.Run();
                 _log.Debug("Tick completed successfully.");
             }
             catch (Exception ex) {
